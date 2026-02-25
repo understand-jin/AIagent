@@ -1,0 +1,8 @@
+flask
+requests
+beautifulsoup4
+pandas
+groq
+python-dotenv
+lxml
+gunicorn

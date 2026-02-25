@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 시장분석 & 대웅 전략 보고서</title>
+
+  <style>
+    :root {
+      --bg: #f0f2f8;
+      --card: #fff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: rgba(15, 23, 42, .1);
+      --blue: #2563eb;
+      --green: #16a34a;
+      --purple: #7c3aed;
+      --orange: #ea580c;
+      --shadow: 0 8px 32px rgba(15, 23, 42, .09);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    /* ── 레이아웃 ── */
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    /* ── 상단바 ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -.3px
+    }
+
+    .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--blue), #60a5fa);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, .14);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hd {
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(15, 23, 42, .015);
+    }
+
+    .bd {
+      padding: 18px 22px 22px;
+    }
+
+    .cardTitle {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.3px;
+    }
+
+    .cardSub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── 검색 ── */
+    .searchRow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 260px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    input[type="text"]::placeholder {
+      color: rgba(100, 116, 139, .75)
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(37, 99, 235, .5);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+    }
+
+    button {
+      padding: 13px 22px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, .22);
+    }
+
+    button:hover {
+      filter: brightness(1.06)
+    }
+
+    /* ── 노드 파이프라인 시각화 ── */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 28px 0 22px;
+      flex-wrap: wrap;
+    }
+
+    .node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .nodeIcon {
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px solid transparent;
+      transition: transform .2s;
+    }
+
+    .nodeIcon:hover {
+      transform: scale(1.08);
+    }
+
+    .node1 .nodeIcon {
+      background: linear-gradient(135deg, rgba(37, 99, 235, .15), rgba(96, 165, 250, .25));
+      border-color: rgba(37, 99, 235, .3);
+    }
+
+    .node2 .nodeIcon {
+      background: linear-gradient(135deg, rgba(124, 58, 237, .15), rgba(167, 139, 250, .25));
+      border-color: rgba(124, 58, 237, .3);
+    }
+
+    .node3 .nodeIcon {
+      background: linear-gradient(135deg, rgba(22, 163, 74, .15), rgba(74, 222, 128, .25));
+      border-color: rgba(22, 163, 74, .3);
+    }
+
+    .nodeLabel {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .nodeDesc {
+      font-size: 11px;
+      color: rgba(100, 116, 139, .7);
+      max-width: 90px;
+    }
+
+    .arrow {
+      font-size: 24px;
+      color: rgba(100, 116, 139, .4);
+      margin: 0 12px;
+      margin-bottom: 16px;
+    }
+
+    /* 활성 노드 (결과 있을 때) */
+    .active .node1 .nodeIcon {
+      background: linear-gradient(135deg, rgba(37, 99, 235, .25), rgba(96, 165, 250, .4));
+      border-color: var(--blue);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, .1);
+    }
+
+    .active .node2 .nodeIcon {
+      background: linear-gradient(135deg, rgba(124, 58, 237, .25), rgba(167, 139, 250, .4));
+      border-color: var(--purple);
+      box-shadow: 0 0 0 6px rgba(124, 58, 237, .1);
+    }
+
+    .active .node3 .nodeIcon {
+      background: linear-gradient(135deg, rgba(22, 163, 74, .25), rgba(74, 222, 128, .4));
+      border-color: var(--green);
+      box-shadow: 0 0 0 6px rgba(22, 163, 74, .1);
+    }
+
+    .active .nodeLabel {
+      color: var(--text);
+    }
+
+    /* ── 결과 그리드 ── */
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media(max-width:1000px) {
+      .grid3 {
+        grid-template-columns: 1fr;
+      }
+
+      .grid2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .sectionTitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-blue {
+      background: rgba(37, 99, 235, .1);
+      color: var(--blue);
+    }
+
+    .badge-purple {
+      background: rgba(124, 58, 237, .1);
+      color: var(--purple);
+    }
+
+    .badge-green {
+      background: rgba(22, 163, 74, .1);
+      color: var(--green);
+    }
+
+    .badge-orange {
+      background: rgba(234, 88, 12, .1);
+      color: var(--orange);
+    }
+
+    /* ── 보고서 텍스트 ── */
+    .reportText {
+      font-size: 14px;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .reportText h2,
+    .reportText strong {
+      color: var(--text);
+    }
+
+    /* ── 기사 리스트 ── */
+    .articleList {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .articleItem {
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, .02);
+      border-radius: 12px;
+    }
+
+    .articleItem .t {
+      font-weight: 700;
+      font-size: 13px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .articleItem .s {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .articleItem .kw {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, .08);
+      color: var(--blue);
+      font-size: 11px;
+    }
+
+    /* ── 전략 박스 (단기/중기) ── */
+    .strategyGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    @media(max-width:700px) {
+      .strategyGrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stratBox {
+      padding: 14px 15px;
+      border-radius: 14px;
+      border: 1px solid;
+    }
+
+    .stratBox.short {
+      border-color: rgba(234, 88, 12, .25);
+      background: rgba(234, 88, 12, .04);
+    }
+
+    .stratBox.mid {
+      border-color: rgba(22, 163, 74, .25);
+      background: rgba(22, 163, 74, .04);
+    }
+
+    .stratBox .stTitle {
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .stratBox.short .stTitle {
+      color: var(--orange);
+    }
+
+    .stratBox.mid .stTitle {
+      color: var(--green);
+    }
+
+    .stratBox .stBody {
+      font-size: 13px;
+      color: var(--text);
+      white-space: pre-wrap;
+      line-height: 1.75;
+    }
+
+    /* ── KPI 칩 ── */
+    .kpiRow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .kpiBox {
+      flex: 1;
+      min-width: 160px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, .03);
+      border: 1px solid var(--line);
+    }
+
+    .kpiLabel {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .kpiVal {
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    /* ── 출처 링크 ── */
+    .sources {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(15, 23, 42, .15);
+    }
+
+    .sources a {
+      display: inline-block;
+      margin: 4px 8px 0 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    /* ── 키워드 클라우드 ── */
+    .cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .cloudTag {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .cloudTag.big {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue);
+      border-color: rgba(37, 99, 235, .25);
+    }
+
+    /* ── 로딩 모달 ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal {
+      width: min(440px, 92vw);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 24px 72px rgba(15, 23, 42, .22);
+      padding: 28px 28px 24px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 4px solid rgba(37, 99, 235, .15);
+      border-top-color: var(--blue);
+      margin: 8px auto 16px;
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .loadSteps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .loadStep {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, .04);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .loadStep.active {
+      background: rgba(37, 99, 235, .06);
+      border-color: rgba(37, 99, 235, .2);
+      color: var(--blue);
+    }
+
+    .stepDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--line);
+      flex-shrink: 0;
+    }
+
+    .loadStep.active .stepDot {
+      background: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, .15);
+    }
+
+    /* 구분선 */
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 24px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- 상단바 -->
+    <div class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>AI 시장분석 & 대웅 전략 보고서</span>
+      </div>
+      {% if keyword %}
+      <span class="pill">🔍 <b style="color:#0f172a">{{ keyword }}</b> + 대웅 분석 완료</span>
+      {% else %}
+      <span class="pill">키워드를 입력하면 3-노드 AI 파이프라인이 분석을 시작합니다</span>
+      {% endif %}
+    </div>
+
+    <!-- 검색 카드 -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="hd">
+        <div class="cardTitle">🔎 뉴스 수집 & 전략 분석</div>
+        <div class="cardSub">키워드 입력 → 수집가 → 대웅 전문가 → 전략가 순서로 자동 분석됩니다.</div>
+        <form id="analyzeForm" method="POST">
+          <div class="searchRow" style="margin-top:14px;">
+            <input id="keywordInput" type="text" name="keyword" placeholder="예: GLP-1, 비만치료제, 신약, 나보타..."
+              value="{{ keyword or '' }}" />
+            <button type="submit">🚀 분석 시작</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 3-노드 파이프라인 시각화 -->
+      <div class="bd">
+        <div class="pipeline {% if analysis %}active{% endif %}">
+          <div class="node node1">
+            <div class="nodeIcon">📡</div>
+            <div class="nodeLabel">노드 1</div>
+            <div class="nodeLabel" style="font-weight:900;color:#2563eb;">수집가</div>
+            <div class="nodeDesc">뉴스 20건<br>수집·정렬</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node node2">
+            <div class="nodeIcon">🧠</div>
+            <div class="nodeLabel">노드 2</div>
+            <div class="nodeLabel" style="font-weight:900;color:#7c3aed;">대웅 전문가</div>
+            <div class="nodeDesc">대웅 현황<br>분석·요약</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node node3">
+            <div class="nodeIcon">📋</div>
+            <div class="nodeLabel">노드 3</div>
+            <div class="nodeLabel" style="font-weight:900;color:#16a34a;">전략가</div>
+            <div class="nodeDesc">단기·중기<br>전략 도출</div>
+          </div>
+        </div>
+
+        {% if analysis %}
+        <div class="kpiRow">
+          <div class="kpiBox">
+            <div class="kpiLabel">수집된 기사</div>
+            <div class="kpiVal">📄 {{ analysis.num_articles }}건</div>
+          </div>
+          <div class="kpiBox">
+            <div class="kpiLabel">분석 키워드</div>
+            <div class="kpiVal">🔑 {{ keyword }} + 대웅</div>
+          </div>
+          <div class="kpiBox">
+            <div class="kpiLabel">파이프라인 상태</div>
+            <div class="kpiVal" style="color:#16a34a;">✅ 완료</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════ 결과 영역 ═══════════════════════════════ -->
+    {% if analysis %}
+
+    <!-- 상단: 3컬럼 요약 카드 -->
+    <div class="grid3">
+
+      <!-- 노드1 카드 -->
+      <div class="card">
+        <div class="hd">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:22px;">📡</span>
+            <div>
+              <div class="cardTitle" style="font-size:15px;">노드 1 · 수집가</div>
+              <div class="cardSub">수집한 뉴스 목록</div>
+            </div>
+            <span class="badge badge-blue" style="margin-left:auto;">{{ analysis.num_articles }}건</span>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="articleList">
+            {% for a in articles[:8] %}
+            <div class="articleItem">
+              <div class="t"><a href="{{ a.url }}" target="_blank" rel="noopener">{{ a.article_title[:50] }}{% if
+                  a.article_title|length > 50 %}...{% endif %}</a></div>
+              <div class="s">{{ a.summary[:80] }}{% if a.summary|length > 80 %}...{% endif %}</div>
+              <span class="kw">{{ a.keyword }}</span>
+            </div>
+            {% endfor %}
+            {% if articles|length > 8 %}
+            <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:4px;">
+              + {{ articles|length - 8 }}건 더 있음
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- 키워드 클라우드 -->
+          {% if analysis.top_words %}
+          <div style="margin-top:14px;padding-top:12px;border-top:1px dashed rgba(15,23,42,.12);">
+            <div class="sectionTitle">빈출 키워드</div>
+            <div class="cloud">
+              {% for word, cnt in analysis.top_words[:15] %}
+              <span class="cloudTag {% if cnt > analysis.top_words[2][1] %}big{% endif %}">
+                {{ word }} <span style="opacity:.6">{{ cnt }}</span>
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 노드2 카드 -->
+      <div class="card">
+        <div class="hd">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:22px;">🧠</span>
+            <div>
+              <div class="cardTitle" style="font-size:15px;">노드 2 · 대웅 전문가</div>
+              <div class="cardSub">대웅그룹 현황 분석</div>
+            </div>
+            <span class="badge badge-purple" style="margin-left:auto;">Expert</span>
+          </div>
+        </div>
+        <div class="bd">
+          {% if expert and expert.report %}
+          <div class="reportText" style="font-size:13px;">{{ expert.report }}</div>
+          {% else %}
+          <div style="color:var(--muted);font-size:13px;">대웅 관련 분석을 가져오지 못했습니다.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 노드3 카드 (요약) -->
+      <div class="card">
+        <div class="hd">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:22px;">📋</span>
+            <div>
+              <div class="cardTitle" style="font-size:15px;">노드 3 · 전략가</div>
+              <div class="cardSub">단기 & 중기 전략</div>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto;">Strategy</span>
+          </div>
+        </div>
+        <div class="bd">
+          {% if strategy %}
+          <div class="strategyGrid">
+            <div class="stratBox short">
+              <div class="stTitle">⚡ 단기 전략 (0~3개월)</div>
+              <div class="stBody">{{ strategy.short_term if strategy.short_term else '보고서 전문을 참조하세요.' }}</div>
+            </div>
+            <div class="stratBox mid">
+              <div class="stTitle">🎯 중기 전략 (3~12개월)</div>
+              <div class="stBody">{{ strategy.mid_term if strategy.mid_term else '보고서 전문을 참조하세요.' }}</div>
+            </div>
+          </div>
+          {% else %}
+          <div style="color:var(--muted);font-size:13px;">전략 보고서를 생성하지 못했습니다.</div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 하단: 전략 전문 보고서 -->
+    {% if strategy and strategy.full_report %}
+    <div class="card" style="margin-top:16px;">
+      <div class="hd">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:22px;">📑</span>
+          <div>
+            <div class="cardTitle">전략 보고서 전문 — <em style="font-style:normal;color:var(--blue);">{{ keyword }}</em> 대응 전략
+            </div>
+            <div class="cardSub">노드3 전략가가 생성한 1페이지 보고서 (단기 3개월 / 중기 1년)</div>
+          </div>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="reportText">{{ strategy.full_report }}</div>
+
+        {% if strategy.sources %}
+        <div class="sources">
+          <div class="sectionTitle" style="margin:0 0 8px;">참고 링크</div>
+          {% for s in strategy.sources %}
+          <a href="{{ s.url }}" target="_blank" rel="noopener">
+            {{ s.domain if s.domain else s.url }}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+
+  </div>
+
+  <!-- 로딩 모달 -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-label="loading">
+    <div class="modal">
+      <div class="spinner"></div>
+      <div style="font-weight:900;font-size:19px;letter-spacing:-.2px;">AI 파이프라인 실행 중</div>
+      <p style="color:var(--muted);font-size:13px;margin-top:4px;">3개 노드가 순차적으로 분석합니다. 약 30~60초 소요됩니다.</p>
+      <div class="loadSteps" id="loadSteps">
+        <div class="loadStep active" id="step1"><span class="stepDot"></span>📡 노드 1: 수집가 — 키워드 + 대웅 뉴스 수집 중...</div>
+        <div class="loadStep" id="step2"><span class="stepDot"></span>🧠 노드 2: 대웅 전문가 — 현황 분석 중...</div>
+        <div class="loadStep" id="step3"><span class="stepDot"></span>📋 노드 3: 전략가 — 전략 보고서 생성 중...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("analyzeForm");
+      const overlay = document.getElementById("overlay");
+      const kw = document.getElementById("keywordInput");
+
+      const steps = [
+        document.getElementById("step1"),
+        document.getElementById("step2"),
+        document.getElementById("step3"),
+      ];
+
+      form?.addEventListener("submit", function () {
+        const keyword = (kw?.value || "").trim();
+        if (!keyword) return;
+        overlay.style.display = "flex";
+
+        const timings = [0, 12000, 24000];
+        timings.forEach((t, idx) => {
+          setTimeout(() => {
+            steps.forEach(s => s.classList.remove("active"));
+            if (steps[idx]) steps[idx].classList.add("active");
+          }, t);
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>
