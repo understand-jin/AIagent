@@ -120,7 +120,7 @@ def node_researcher(keyword: str, max_results: int = 20) -> pd.DataFrame:
 # =========================
 def node_expert(keyword: str, df_articles: pd.DataFrame) -> str:
     """
-    일반 뉴스 자료를 바탕으로 대웅제약이 가질 수 있는 기회 요인 분석
+    일반 뉴스 자료를 바탕으로 제약회사이 가질 수 있는 기회 요인 분석
     """
     bullets = []
     for _, r in df_articles.head(10).iterrows():
@@ -132,13 +132,13 @@ def node_expert(keyword: str, df_articles: pd.DataFrame) -> str:
     bullets_text = "\n".join(bullets) if bullets else "수집된 뉴스 정보가 부족합니다."
 
     prompt = f"""
-너는 대웅제약의 전략기획팀 전문 분석가다.
-제공된 시장 뉴스 자료를 바탕으로 '{keyword}' 이슈가 대웅제약에게 주는 **비즈니스 기회와 전략적 활용 방안**을 한국어로 보고해라.
+너는 제약회사의 전략기획팀 전문 분석가다.
+제공된 시장 뉴스 자료를 바탕으로 '{keyword}' 이슈가 제약회사에게 주는 **비즈니스 기회와 전략적 활용 방안**을 한국어로 보고해라.
 
 작성 구조:
 1. 시장 트렌드 핵심 요약 (2~3줄)
-2. 대웅제약이 주목해야 할 3대 기회 요인 (각 요인별 상세 설명)
-3. 대웅제약의 핵심 역량과의 접점 (R&D, 영업망, 제조시설 등 연계)
+2. 제약회사가 주목해야 할 3대 기회 요인 (각 요인별 상세 설명)
+3. 제약회사의 핵심 역량과의 접점 (R&D, 영업망, 제조시설 등 연계)
 4. 활용 시 예상되는 장벽 및 해결 방향 (2줄)
 
 분량: 600~800자. 구체적인 제약사 시각에서 분석할 것.
@@ -169,12 +169,12 @@ def node_strategist(keyword: str, df_articles: pd.DataFrame,
 
     prompt = f"""
 너는 대한민국 1등 제약 전략 컨설턴트다. 
-앞서 분석된 기회 요인들을 바탕으로 대웅제약이 '{keyword}' 이슈를 시장 점유율 확대와 
+앞서 분석된 기회 요인들을 바탕으로 제약회사가 '{keyword}' 이슈를 시장 점유율 확대와 
 성장 동력으로 만들기 위한 **실행 전략 보고서**를 한국어로 작성해라.
 
 작성 구조:
 ## 1. 전략적 기회 개요 (Executive Summary)
-## 2. 대웅제약 맞춤형 대응 전략
+## 2. 제약회사 맞춤형 대응 전략
    - 신약 R&D/인허가 관점
    - 시장 선점 및 마케팅 관점
 ## 3. 실행 로드맵 (단기: 3개월 / 중기: 1년)
@@ -186,7 +186,7 @@ def node_strategist(keyword: str, df_articles: pd.DataFrame,
 [시장 뉴스 자료 요약]
 {chr(10).join(bullets)}
 
-[대웅제약 기회 요인 분석 보고]
+[제약산업 기회 요인 분석 보고]
 {expert_report}
 """.strip()
 
@@ -251,7 +251,7 @@ def index():
 
             analysis = {
                 "summary":      (
-                    f"키워드 '{keyword}' + 대웅 관련 뉴스 {num_articles}건 분석. "
+                    f"키워드 '{keyword}' + 제약산업 관련 뉴스 {num_articles}건 분석. "
                     f"기사 평균 {avg_length}자."
                 ),
                 "num_articles": num_articles,
