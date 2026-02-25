@@ -59,16 +59,13 @@ def _domain_filter(domain: str) -> bool:
 # =========================
 def node_researcher(keyword: str, max_results: int = 20) -> pd.DataFrame:
     """
-    키워드 + '대웅 {키워드}' 두 가지 쿼리로 Tavily 뉴스 수집
-    → 중복·저신뢰 필터 → 최대 20건 정렬 DataFrame 반환
+    입력 키워드로 시장 뉴스 수집 (대웅 특정 검색 제거)
     """
-    daewoong_query = f"대웅 {keyword}"
-
-    df_main     = search_news_for_keyword(keyword,        max_results=max_results)
-    df_daewoong = search_news_for_keyword(daewoong_query, max_results=max_results)
-
-    df_all = pd.concat([df_main, df_daewoong], ignore_index=True)
-    df_all = df_all.drop_duplicates(subset=["url"]).reset_index(drop=True)
+    df_all = search_news_for_keyword(keyword, max_results=max_results)
+    
+    if df_all.empty:
+        cols = ["keyword", "source_title", "article_title", "url", "domain", "content", "summary"]
+        return pd.DataFrame(columns=cols)
 
     rows = []
     seen_titles = set()
@@ -114,50 +111,39 @@ def node_researcher(keyword: str, max_results: int = 20) -> pd.DataFrame:
         if len(rows) >= 20:
             break
 
-    if not rows:
-        cols = ["keyword", "source_title", "article_title", "url", "domain", "content", "summary"]
-        return pd.DataFrame(columns=cols)
-
     df_result = pd.DataFrame(rows).reset_index(drop=True)
-    df_result = df_result.sort_values("article_title").reset_index(drop=True)
     return df_result
 
 
 # =========================
-# ★ 노드 2: 대웅 전문가 (Expert)
+# ★ 노드 2: 기회 분석 전문가 (Opportunity Analyst)
 # =========================
 def node_expert(keyword: str, df_articles: pd.DataFrame) -> str:
-    df_dw = df_articles[df_articles["keyword"].str.contains("대웅", na=False)]
-    if df_dw.empty:
-        df_dw = df_articles[
-            df_articles["content"].str.contains("대웅", na=False) |
-            df_articles["article_title"].str.contains("대웅", na=False)
-        ]
-
+    """
+    일반 뉴스 자료를 바탕으로 대웅제약이 가질 수 있는 기회 요인 분석
+    """
     bullets = []
-    for _, r in df_dw.head(10).iterrows():
+    for _, r in df_articles.head(10).iterrows():
         bullets.append(
             f"- 제목: {r['article_title']}\n"
-            f"  요약: {r['summary']}\n"
-            f"  링크: {r['url']}"
+            f"  내용요약: {r['summary']}"
         )
 
-    bullets_text = "\n".join(bullets) if bullets else \
-        "관련 기사를 찾지 못했습니다. 공개 정보를 기반으로 추론해 주세요."
+    bullets_text = "\n".join(bullets) if bullets else "수집된 뉴스 정보가 부족합니다."
 
     prompt = f"""
-너는 대웅그룹(대웅제약, 대웅바이오 등) 전문 분석가다.
-아래 뉴스 자료를 바탕으로 '{keyword}' 이슈에 대한 **대웅그룹의 현황과 포지셔닝**을 한국어로 정리해라.
+너는 대웅제약의 전략기획팀 전문 분석가다.
+제공된 시장 뉴스 자료를 바탕으로 '{keyword}' 이슈가 대웅제약에게 주는 **비즈니스 기회와 전략적 활용 방안**을 한국어로 보고해라.
 
 작성 구조:
-1. 대웅그룹 핵심 사업 현황 (2~3줄)
-2. '{keyword}' 관련 대웅의 최근 동향 (3~5줄)
-3. 경쟁사 대비 대웅의 강점/약점 (2~3줄)
-4. 주목할 리스크 요인 (2줄)
+1. 시장 트렌드 핵심 요약 (2~3줄)
+2. 대웅제약이 주목해야 할 3대 기회 요인 (각 요인별 상세 설명)
+3. 대웅제약의 핵심 역량과의 접점 (R&D, 영업망, 제조시설 등 연계)
+4. 활용 시 예상되는 장벽 및 해결 방향 (2줄)
 
-분량: 500~700자. 과장 금지, 추정은 '추정' 표기.
+분량: 600~800자. 구체적인 제약사 시각에서 분석할 것.
 
-[대웅 관련 뉴스]
+[시장 뉴스 자료]
 {bullets_text}
 """.strip()
 
@@ -182,23 +168,25 @@ def node_strategist(keyword: str, df_articles: pd.DataFrame,
         )
 
     prompt = f"""
-너는 전략 컨설턴트다. 아래 두 가지 자료를 바탕으로 대웅그룹이 '{keyword}' 이슈에 대응하는
-**단기(3개월) / 중기(1년) 전략 보고서**를 한국어 1페이지 형식으로 작성해라.
+너는 대한민국 1등 제약 전략 컨설턴트다. 
+앞서 분석된 기회 요인들을 바탕으로 대웅제약이 '{keyword}' 이슈를 시장 점유율 확대와 
+성장 동력으로 만들기 위한 **실행 전략 보고서**를 한국어로 작성해라.
 
 작성 구조:
-## Executive Summary (3줄)
-## 시장 핵심 트렌드 TOP3
-## 단기 전략 (0~3개월) — 즉시 실행 가능한 액션 아이템 3개
-## 중기 전략 (3~12개월) — 중장기 경쟁력 강화 방향 3개
-## 예상 리스크 & 대응 방안
-## 결론 및 우선순위
+## 1. 전략적 기회 개요 (Executive Summary)
+## 2. 대웅제약 맞춤형 대응 전략
+   - 신약 R&D/인허가 관점
+   - 시장 선점 및 마케팅 관점
+## 3. 실행 로드맵 (단기: 3개월 / 중기: 1년)
+## 4. 기대 효과 및 성과 지표 (KPI)
+## 5. 리스크 관리 방안
 
-분량: 900~1300자. 구체적 수치/기간 포함 권장.
+분량: 1000~1300자. 논리적이고 전문적인 비즈니스 톤 유지.
 
-[시장 뉴스 요약]
+[시장 뉴스 자료 요약]
 {chr(10).join(bullets)}
 
-[대웅그룹 현황 (전문가 분석)]
+[대웅제약 기회 요인 분석 보고]
 {expert_report}
 """.strip()
 

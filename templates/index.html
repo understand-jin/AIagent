@@ -586,7 +586,7 @@
         <span>AI 시장분석 & 대웅 전략 보고서</span>
       </div>
       {% if keyword %}
-      <span class="pill">🔍 <b style="color:#0f172a">{{ keyword }}</b> + 대웅 분석 완료</span>
+      <span class="pill">🔍 <b style="color:#0f172a">{{ keyword }}</b> 기반 대웅제약 전략 도출 완료</span>
       {% else %}
       <span class="pill">키워드를 입력하면 3-노드 AI 파이프라인이 분석을 시작합니다</span>
       {% endif %}
@@ -596,7 +596,7 @@
     <div class="card" style="margin-bottom:20px;">
       <div class="hd">
         <div class="cardTitle">🔎 뉴스 수집 & 전략 분석</div>
-        <div class="cardSub">키워드 입력 → 수집가 → 대웅 전문가 → 전략가 순서로 자동 분석됩니다.</div>
+        <div class="cardSub">키워드 입력 → 수집가 → 기회 분석가 → 전략가 순서로 자동 분석됩니다.</div>
         <form id="analyzeForm" method="POST">
           <div class="searchRow" style="margin-top:14px;">
             <input id="keywordInput" type="text" name="keyword" placeholder="예: GLP-1, 비만치료제, 신약, 나보타..."
@@ -619,8 +619,8 @@
           <div class="node node2">
             <div class="nodeIcon">🧠</div>
             <div class="nodeLabel">노드 2</div>
-            <div class="nodeLabel" style="font-weight:900;color:#7c3aed;">대웅 전문가</div>
-            <div class="nodeDesc">대웅 현황<br>분석·요약</div>
+            <div class="nodeLabel" style="font-weight:900;color:#7c3aed;">기회 분석가</div>
+            <div class="nodeDesc">시장 기회 요인<br>분석·도출</div>
           </div>
           <div class="arrow">→</div>
           <div class="node node3">
@@ -639,7 +639,7 @@
           </div>
           <div class="kpiBox">
             <div class="kpiLabel">분석 키워드</div>
-            <div class="kpiVal">🔑 {{ keyword }} + 대웅</div>
+            <div class="kpiVal">🔑 {{ keyword }}</div>
           </div>
           <div class="kpiBox">
             <div class="kpiLabel">파이프라인 상태</div>
@@ -707,8 +707,8 @@
           <div style="display:flex;align-items:center;gap:8px;">
             <span style="font-size:22px;">🧠</span>
             <div>
-              <div class="cardTitle" style="font-size:15px;">노드 2 · 대웅 전문가</div>
-              <div class="cardSub">대웅그룹 현황 분석</div>
+              <div class="cardTitle" style="font-size:15px;">노드 2 · 기회 분석가</div>
+              <div class="cardSub">대웅제약 활용 기회 분석</div>
             </div>
             <span class="badge badge-purple" style="margin-left:auto;">Expert</span>
           </div>
@@ -796,8 +796,8 @@
       <div style="font-weight:900;font-size:19px;letter-spacing:-.2px;">AI 파이프라인 실행 중</div>
       <p style="color:var(--muted);font-size:13px;margin-top:4px;">3개 노드가 순차적으로 분석합니다. 약 30~60초 소요됩니다.</p>
       <div class="loadSteps" id="loadSteps">
-        <div class="loadStep active" id="step1"><span class="stepDot"></span>📡 노드 1: 수집가 — 키워드 + 대웅 뉴스 수집 중...</div>
-        <div class="loadStep" id="step2"><span class="stepDot"></span>🧠 노드 2: 대웅 전문가 — 현황 분석 중...</div>
+        <div class="loadStep active" id="step1"><span class="stepDot"></span>📡 노드 1: 수집가 — 시장 뉴스 수집 중...</div>
+        <div class="loadStep" id="step2"><span class="stepDot"></span>🧠 노드 2: 기회 분석가 — 기회 요인 도출 중...</div>
         <div class="loadStep" id="step3"><span class="stepDot"></span>📋 노드 3: 전략가 — 전략 보고서 생성 중...</div>
       </div>
     </div>
